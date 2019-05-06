@@ -1,0 +1,21 @@
+﻿body {
+}
+.clear{clear:both;}
+.fl{float:left}
+.fr{float:right}
+
+.wek-header{display: block; width: 100%;height: 75px;background: #383c48;color:#fff}
+.layui-logo img{display: block; width: auto;height: 55px;margin: 10px 15px;}
+
+.pad_td{display: block; padding: 15px 0;}
+
+.tab_pub, .tab_pub td{border: 1px #eeeeee solid;border-collapse: collapse;line-height: 35px;_line-height: 35px;}
+.tab_pub th{border: 1px #eeeeee solid;background: #f3f3f3;border-collapse: collapse;line-height: 35px;_line-height: 35px;}
+.ta_bg{padding-right:5px;text-align:right}
+.ta_txt{padding-left:5px;text-align:left}
+
+.layui-table-view{background: #fff;}
+.modeHead{display:block;height:50px;line-height:50px;padding:5px 10px;background:#ddd;}
+.modeHead .titleBar{display:block;float:left;font-size:16px;font-weight:bold;color:#333}
+.modeItem{display:block;width:100%;line-height:30px;padding:15px;}
+.optonBar{padding:10px 0;}

@@ -1,0 +1,407 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>银行按揭信息系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="js/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <script src="js/comm/jquery-ajax.js" type="text/javascript"></script>
+    <script src="js/bank/validate.min.js" type="text/javascript"></script>
+    <script src="js/bank/formcheck.js" type="text/javascript"></script>
+    <script src="js/bank/commclient.js" type="text/javascript"></script>
+    <link href="js/layui/css/layui.css" rel="stylesheet" type="text/css" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body style="background: #C1BCB8">
+    <div class="layui-form layui-header layui-layout layui-layout-admin wek-header">
+        <div class="layui-logo">
+            <img src="images/logo_img.png" />
+        </div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><a href="javascript:;">
+                <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                你好！<span id="s_username">请登陆</span> </a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="javascript:setpwd();" target="iframemain">修改密码</a></dd>
+                    <dd>
+                        <a href="javascript:systemexit();" target="iframemain">退出</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+    <div class="layui-form demoTable pad_td" lay-filter="divsearch" style="margin: 20px 20px;
+        text-align: center; background-color: White; border-radius: 8px 8px 0 0">
+        <div class="layui-form-item" style="margin-top: 10px">
+            合同编号
+            <div class="layui-inline" style="width: 100px">
+                <input id="txt_contractNo" class="layui-input" name="time" placeholder="输入合同编号" autocomplete="off">
+            </div>
+            物业地址
+            <div class="layui-inline" style="width: 100px">
+                <!--
+                <input class="layui-input" name="time" id="txt_stimeC" placeholder="年-月-日" autocomplete="off">-->
+                <input id="txt_attr" class="layui-input" name="time" placeholder="输入物业地址" autocomplete="off">
+            </div>
+            合同签署日期
+            <div class="layui-inline" style="width: 100px">
+                <input class="layui-input" name="time" id="txt_stimeR" placeholder="年-月-日" autocomplete="off">
+            </div>
+            ~
+            <div class="layui-inline" style="width: 100px">
+                <input class="layui-input" name="time" id="txt_etimeR" placeholder="年-月-日" autocomplete="off">
+            </div>
+            买方姓名
+            <div class="layui-inline" style="width: 100px">
+                <input id="txt_clientName" class="layui-input" name="time" placeholder="输入买方姓名" autocomplete="off">
+            </div>
+            卖方姓名
+            <div class="layui-inline" style="width: 100px">
+                <input id="txt_owenName" class="layui-input" name="time" placeholder="输入卖方姓名" autocomplete="off">
+            </div>
+            经纪人
+            <div class="layui-inline" style="width: 100px">
+                <input id="txt_userName" class="layui-input" name="time" placeholder="输入经纪人名" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <!--  ~
+            <div class="layui-inline">
+                <input class="layui-input" name="time" id="txt_etimeC" placeholder="年-月-日" autocomplete="off">
+            </div>-->
+            信贷专员
+            <div class="layui-inline" style="width: 90px">
+                <input id="txt_neiqin" class="layui-input" name="time" placeholder="输入信贷专员" autocomplete="off">
+            </div>
+            银行接收人
+            <div class="layui-inline" style="width: 110px">
+                <input id="txt_receiveName" class="layui-input" name="time" placeholder="输入银行接收人"
+                    autocomplete="off">
+            </div>
+            付款方式
+            <div class="layui-inline" style="width: 150px">
+                <select id="pay_type" class="layui-input" name="pay_type" style="width: 80px;">
+                </select>
+            </div>
+            合同进度
+            <div class="layui-inline" style="width: 150px">
+                <select id="contract_type" class="layui-input" name="contract_type" style="width: 80px;">
+                </select>
+            </div>
+            合同状态
+            <div class="layui-inline" style="width: 90px">
+                <select id="select_type" class="layui-input" name="interest" style="width: 80px;">
+                    <option value="">--选择--</option>
+                    <option value="2">已移交</option>
+                    <option value="1">未移交</option>
+                    <option value="3">已退件</option>
+                </select>
+            </div>
+            <div class="layui-inline">
+                <input type="checkbox" id="chk_less" name="search[less]" title="仅显示缺少资料的">
+            </div>
+            <!--
+            <div class="layui-inline">
+                <input type="checkbox" id="chk_myreceived" name="search[myreceived]" title="仅显示本人接收">
+            </div>-->
+            <button id="bnt_search" class="layui-btn" data-type="searchlist">
+                查询</button>
+        </div>
+    </div>
+    <div class="layui-btn-group demoTable">
+    </div>
+    <div style="margin: 0px 20px; background: #fff; padding-top: 10px;">
+        <table class="layui-hide" id="table_bankMort" lay-filter="trtool" style="height: 200px;
+            padding-top: 15px;">
+        </table>
+    </div>
+    <script type="text/html" id="barDemo">
+      <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail">查看</a>
+      <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="indate">接收</a>
+    </script>
+    <input type="hidden" id="hf_SubbranchID" />
+    <script src="js/layui/layui.all.js" type="text/javascript"></script>
+    <script type="text/javascript" language="javascript">
+        var curdata;
+        var pindex;
+        function openphoto(matterType, matterName, matterid, matterUrl) {
+            var json = {
+                "title": matterType, //相册标题
+                "id": 123, //相册id
+                "start": 0, //初始显示的图片序号，默认0
+                "data": [   //相册包含的图片，数组格式
+                            {
+                            "alt": matterName,
+                            "pid": "img_" + matterid, //图片id
+                            "src": matterUrl, //原图地址
+                            "thumb": "" //缩略图地址
+                        }
+                        ]
+            };
+            layer.photos({
+                photos: json
+                , anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+            });
+        }
+
+
+        function getuseraccount() {
+            return jQuery("#s_username").text();
+        }
+
+        function setpwd() {
+            var subbranchID = jQuery("#hf_SubbranchID").val();
+            layer.open({
+                type: 2,
+                title: "修改登陆密码",
+                content: "loginPasswordEdit.htm?subbranchID=" + subbranchID,
+                area: ['620px', '450px'] //400 220
+            });
+            return false;
+        }
+
+
+
+
+        function gologin() {
+            window.location.href = 'login.aspx';
+        }
+
+        function systemexit() {
+            layer.confirm('你确定要退出系统吗?', function (index) {
+                var kv = {
+                    't': 103,
+                    'zid': $("#hf_SubbranchID").val()
+                }
+                asyncAjax(publicApi.apiList.bankurl, kv, updateshopsuccess);
+                function updateshopsuccess(model) {
+                    layer.msg(model.data);
+                    setTimeout("gologin()", 2000);
+                }
+            });
+        }
+
+
+
+        function systemexitLogin() {
+            var kv = {
+                't': 103,
+                'zid': $("#hf_SubbranchID").val()
+            }
+            asyncAjax(publicApi.apiList.bankurl, kv, updateshopsuccess);
+            function updateshopsuccess(model) {
+                layer.msg(model.data);
+                setTimeout("gologin()", 2000);
+            }
+        }
+
+
+
+        layui.use(['form', 'table', 'laydate'], function () {
+            var table = layui.table;
+            var laydate = layui.laydate;
+            var form = layui.form;
+            laydate.render({
+                elem: '#txt_stimeR'
+            });
+            laydate.render({
+                elem: '#txt_etimeR'
+            });
+            //            laydate.render({
+            //                elem: '#txt_stimeC'
+            //            });
+            //            laydate.render({
+            //                elem: '#txt_etimeC'
+            //            });
+
+            function loadloginuser() {
+                var kv = {
+                    't': 102
+                };
+                asyncAjax(publicApi.apiList.bankurl, kv, loadbanklistsuccess);
+
+                function loadbanklistsuccess(model) {
+                    if (model.code == 0) {
+                        var data = model.data;
+                        jQuery("#hf_SubbranchID").val(data.key);
+                        jQuery("#s_username").html(data.value);
+                        loaddata();
+                    } else {
+                        layer.msg(model.msg);
+                        setTimeout("gologin()", 1000);
+                    }
+                }
+
+            }
+
+            loadloginuser();
+
+            var loadingindex;
+            function loaddata() {
+                loadingindex = layer.msg('数据加载中...', { icon: 16, shade: 0.5, time: 30000 });
+                var theight = document.documentElement.clientHeight - 320;
+                table.render({
+                    elem: '#table_bankMort',
+                    url: publicApi.apiList.bankurl + '?t=1&subbranchID=' + jQuery("#hf_SubbranchID").val(),
+                    cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增  270
+                    limit: 50,
+                    cols: [
+                        [
+                            { checkbox: true, fixed: true },
+                            { field: 'contractNo', title: '合同号', width: 120, fixed: true, sort: true },
+                            { field: 'address', title: '物业地址', width: 160, fixed: true },
+                            { field: 'paytype', title: '付款方式', width: 90 },
+                            { field: 'clientname', title: '客户', width: 100 },
+                            { field: 'owenname', title: '业主', width: 90 },
+                            { field: 'username', title: '经纪人', width: 90 },
+                            { field: 'usertel', title: '经纪人手机号', width: 100 },
+                            { field: 'XDname', title: '信贷专员', width: 90 },
+                            { field: 'Userphone', title: '信贷专员电话', width: 100, sort: true },
+                            { field: 'receivename', title: '接收人', width: 90 },
+                            { field: 'Sccetptype', title: '合同进度', width: 100 },
+                            { field: 'receivetime', title: '接收时间', width: 110, sort: true },
+                            { field: 'contractstatu', title: '合同状态', width: 90, sort: true },
+                            { fixed: 'right', title: '操作', width: 180, align: 'center', toolbar: '#barDemo' }
+                        ]
+                    ],
+                    id: 'bankmartlist',
+                    page: true,
+                    skin: 'row',
+                    even: true,
+                    height: theight,
+                    done: function (res, curr, count) {
+                        layer.close(loadingindex);
+                    }
+                });
+            }
+
+            //监听表格复选框选择
+            table.on('checkbox(trtool)', function (obj) {
+                console.log(obj);
+            });
+            //监听工具条
+            table.on('tool(trtool)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'detail') {
+                    curdata = data;
+                    pindex = layer.open({
+                        type: 2,
+                        title: "查看详情",
+                        area: ['1300px', '620px'],
+                        fixed: false, //不固定
+                        maxmin: true,
+                        content: 'bankMortDetail.htm?cid=' + curdata.contractID + '&username=' + escape(curdata.username) + '&t=' + (new Date()).getTime()
+                    });
+                    layer.full(pindex);
+                    return false;
+                }
+                if (obj.event === 'indate') {
+                    var kv = {
+                        't': 14,
+                        'cid': data.contractID,
+                        'plan': 2,
+                        'username': jQuery("#s_username").text()
+                    }
+                    asyncAjax(publicApi.apiList.bankurl, kv, updateshopsuccess);
+
+                    function updateshopsuccess(model) {
+                        if (model.code == 0) {
+                            layer.msg("进度为已接收!");
+                        } else {
+                            layer.msg(model.msg);
+                        }
+                    }
+                }
+            });
+
+
+
+
+            var $ = layui.$,
+                active = {
+                    searchlist: function () { //查询
+                        loadingindex = layer.msg('数据加载中...', { icon: 16, shade: 0.5, time: 30000 });
+                        table.reload('bankmartlist', {
+                            where: {
+                                //设定异步数据接口的额外参数，任意设
+                                contractNo: $("#txt_contractNo").val(),
+                                stimeR: $("#txt_stimeR").val(),
+                                etimeR: $("#txt_etimeR").val(),
+                                userName: $("#txt_userName").val(),
+                                clientName: $("#txt_clientName").val(),
+                                owenName: $("#txt_owenName").val(),
+                                attr: $("#txt_attr").val(),
+                                neiqin: $("#txt_neiqin").val(),
+                                receiveName: $("#txt_receiveName").val(),
+                                selecttype: $("#select_type").val(),
+                                paytype: $("#pay_type").val(),
+                                contracttypes: $("#contract_type").val(),
+                                less: $("#chk_less").is(":checked")
+                            }, done: function (res, curr, count) {
+                                layer.close(loadingindex);
+                            }
+                        });
+                        return false;
+                    }
+                };
+
+            $('.demoTable .layui-btn').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+
+            });
+
+            function loadmattertype() {
+                var kv = {
+                    't': 2
+                }
+                asyncAjax(publicApi.apiList.bankurl, kv, updateshopsuccess);
+
+                function updateshopsuccess(model) {
+                    var typehtml = '<option value="">--选择--</option>';
+                    if (model.code == 0) {
+                        var data = model.data;
+                        for (var i in data) {
+                            typehtml += "<option value='" + data[i].payWayID + "'>" + data[i].payWayName + "</option>";
+                        }
+                        $("#pay_type").html('').append(typehtml);
+                        form.render('select', 'divsearch');
+                    } else {
+                        layer.msg(model.msg);
+                    }
+                }
+
+            }
+            //合同进度
+            function loadcontracttype() {
+                var kv = {
+                    't': 3
+                }
+                asyncAjax(publicApi.apiList.bankurl, kv, updateshopsuccess);
+
+                function updateshopsuccess(model) {
+                    var typehtml = '<option value="">--选择--</option>';
+                    if (model.code == 0) {
+                        var data = model.data;
+                        for (var i in data) {
+                            typehtml += "<option value='" + data[i].contractID + "'>" + data[i].contractName + "</option>";
+                        }
+                        $("#contract_type").html('').append(typehtml);
+                        form.render('select', 'divsearch');
+                    } else {
+                        layer.msg(model.msg);
+                    }
+                }
+
+            }
+            loadmattertype();
+            loadcontracttype();
+
+        });
+
+    </script>
+</body>
+</html>
